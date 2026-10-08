@@ -40,6 +40,10 @@ def get_llm(provider: str = None, temperature: float = 0.0):
             "model": config.OPENAI_MODEL,
             "api_key": config.OPENAI_API_KEY,
             "temperature": temperature,
+            # Mạng/DNS có thể chập chờn trong lượt chạy 50 câu. Để OpenAI SDK
+            # tự retry các lỗi kết nối tạm thời thay vì dừng toàn bộ pipeline.
+            "max_retries": 6,
+            "timeout": 60,
         }
         if config.OPENAI_BASE_URL:
             kwargs["base_url"] = config.OPENAI_BASE_URL
@@ -77,6 +81,8 @@ def get_llm(provider: str = None, temperature: float = 0.0):
             api_key=config.OPENROUTER_API_KEY,
             base_url=config.OPENROUTER_BASE_URL,
             temperature=temperature,
+            max_retries=6,
+            timeout=60,
         )
 
     else:
